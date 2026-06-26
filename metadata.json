@@ -1,0 +1,6 @@
+{
+  "name": "Binary Studio",
+  "description": "A professional client-side hex editor, bit editor, and file structure analyzer for images, audio, video, PDF, ZIP, and binary files.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
