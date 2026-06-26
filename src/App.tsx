@@ -103,6 +103,8 @@ export default function App() {
     }
   }, [activeTabId]);
 
+  const [bulkPreFill, setBulkPreFill] = useState<{ startOffset: number; length: number } | null>(null);
+
   // Listen to select-offset event for ByteSemanticInspector synchronization
   useEffect(() => {
     const handleSelectOffsetEvent = (e: Event) => {
@@ -114,6 +116,19 @@ export default function App() {
       window.removeEventListener('select-offset', handleSelectOffsetEvent);
     };
   }, [activeTabId]);
+
+  // Listen to open-bulk-editor event
+  useEffect(() => {
+    const handleOpenBulkEditor = (e: Event) => {
+      const customEvent = e as CustomEvent<{ offset: number; length: number }>;
+      setBulkPreFill({ startOffset: customEvent.detail.offset, length: customEvent.detail.length });
+      setSidebarTab('bulk');
+    };
+    window.addEventListener('open-bulk-editor', handleOpenBulkEditor);
+    return () => {
+      window.removeEventListener('open-bulk-editor', handleOpenBulkEditor);
+    };
+  }, []);
 
   // Debounced safe tab sync to IndexedDB (prevents lag and startup race-condition deletions)
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -579,6 +594,7 @@ export default function App() {
                   <BulkEditor
                     tab={activeTab}
                     onEditMultipleBytes={onEditMultipleBytes}
+                    preFill={bulkPreFill}
                   />
                 )}
 

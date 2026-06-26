@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { StructureNode } from '../types';
-import { FolderTree, ChevronRight, ChevronDown, Compass, CornerDownRight, ShieldCheck, ShieldAlert, AlertTriangle, Filter } from 'lucide-react';
+import { FolderTree, ChevronRight, ChevronDown, Compass, CornerDownRight, ShieldCheck, ShieldAlert, AlertTriangle, Filter, Edit2 } from 'lucide-react';
 
 interface FileStructureAnalyzerProps {
   nodes: StructureNode[];
@@ -303,6 +303,23 @@ function TreeNode({ node, onSelect, selectedOffset, depth }: TreeNodeProps) {
 
         {/* Offset and size tag & Danger rating badge */}
         <div className="flex items-center gap-2 shrink-0 text-[9px]">
+          {/* Action: Edit Block */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(node.offset); // Select the offset to sync cursor
+              window.dispatchEvent(
+                new CustomEvent('open-bulk-editor', {
+                  detail: { offset: node.offset, length: node.length }
+                })
+              );
+            }}
+            title="Sửa toàn bộ khối này"
+            className="p-1 hover:bg-amber-500/20 hover:text-amber-400 text-zinc-500 rounded transition"
+          >
+            <Edit2 size={12} />
+          </button>
+
           {/* Danger Badge */}
           <span className={`px-1.5 py-0.2 rounded border text-[8px] font-bold ${rating.bgColor} ${rating.color} ${rating.borderColor}`}>
             {rating.label}

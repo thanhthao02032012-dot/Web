@@ -24,9 +24,10 @@ import {
 interface BulkEditorProps {
   tab: FileTab;
   onEditMultipleBytes: (editsMap: Map<number, number>) => void;
+  preFill?: { startOffset: number; length: number } | null;
 }
 
-export default function BulkEditor({ tab, onEditMultipleBytes }: BulkEditorProps) {
+export default function BulkEditor({ tab, onEditMultipleBytes, preFill }: BulkEditorProps) {
   // Tabs: 'fill' (Fill range with bytes/text) or 'transform' (Math/XOR operations on existing bytes)
   const [activeSubTab, setActiveSubTab] = useState<'fill' | 'transform'>('fill');
 
@@ -39,6 +40,19 @@ export default function BulkEditor({ tab, onEditMultipleBytes }: BulkEditorProps
   const [startOffset, setStartOffset] = useState<number>(0);
   const [endOffset, setEndOffset] = useState<number>(16);
   const [rangeLength, setRangeLength] = useState<number>(16);
+
+  // Initialize from preFill if provided
+  useEffect(() => {
+    if (preFill) {
+      setStartInput(preFill.startOffset.toString());
+      setStartOffset(preFill.startOffset);
+      setLengthInput(preFill.length.toString());
+      setRangeLength(preFill.length);
+      const end = preFill.startOffset + preFill.length;
+      setEndInput(end.toString());
+      setEndOffset(end);
+    }
+  }, [preFill]);
 
   // Error/Success state
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
